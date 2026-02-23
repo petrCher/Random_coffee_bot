@@ -24,7 +24,7 @@ class Base:
         attrs = []
         for c in self.__table__.columns:
             attrs.append(f"{c.name}={getattr(self, c.name)}")
-        return "{}({})".format(c.__class__.__name__, ', '.join(attrs))
+        return "{}({})".format(c.__class__.__name__, ", ".join(attrs))
 
 
 class BaseDbModel(Base):
