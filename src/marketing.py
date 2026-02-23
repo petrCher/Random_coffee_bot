@@ -1,0 +1,1 @@
+"""There will be connection with marketing api for statistics"""

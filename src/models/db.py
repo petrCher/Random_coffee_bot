@@ -4,7 +4,7 @@ from sqlalchemy import Integer, String, ForeignKey
 
 class Users(BaseDBModel):
     __tablename__ = "user_info"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     tg_id: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
     birthday: Mapped[str] = mapped_column(String, default=None)
@@ -15,3 +15,10 @@ class Holidays(BaseDBModel):
     id: Mapped[int] = mapped_column(Integer, ForeignKey("user_info.id"), primary_key=True)
     status: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     till_date: Mapped[str] = mapped_column(String, nullable=False, default="null")
+
+class MetInfo(BaseDBModel):
+    __tablename__ = "met_info"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    first_user_id: Mapped[int] = mapped_column(ForeignKey("user_info.id"))
+    second_user_id: Mapped[int] = mapped_column(ForeignKey("user_info.id"))
+    date: Mapped[str]
