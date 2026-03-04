@@ -1,10 +1,10 @@
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .base import BaseDBModel
+from .base import BaseDbModel
 
 
-class Users(BaseDBModel):
+class Users(BaseDbModel):
     __tablename__ = "user_info"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     tg_id: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
@@ -13,7 +13,7 @@ class Users(BaseDBModel):
     about: Mapped[str] = mapped_column(String, nullable=False)
 
 
-class Holidays(BaseDBModel):
+class Holidays(BaseDbModel):
     __tablename__ = "holidays_status"
     id: Mapped[int] = mapped_column(
         Integer, ForeignKey("user_info.id"), primary_key=True
@@ -22,14 +22,14 @@ class Holidays(BaseDBModel):
     till_date: Mapped[str] = mapped_column(String, nullable=False, default="null")
 
 
-class MeetInfo(BaseDBModel):
+class MeetInfo(BaseDbModel):
     __tablename__ = "meet_info"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     first_user_id: Mapped[int] = mapped_column(ForeignKey("user_info.id"))
     second_user_id: Mapped[int] = mapped_column(ForeignKey("user_info.id"))
 
 
-class Username(BaseDBModel):
+class Username(BaseDbModel):
     __tablename__ = "tg_usernames"
     id: Mapped[int] = mapped_column(
         Integer, ForeignKey("user_info.id"), primary_key=True
@@ -37,7 +37,7 @@ class Username(BaseDBModel):
     username: Mapped[str] = mapped_column(String, nullable=False)
 
 
-class BanList(BaseDBModel):
+class BanList(BaseDbModel):
     __tablename__ = "ban_list"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     banned_user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user_info.id"))

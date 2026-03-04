@@ -1,3 +1,4 @@
 from .base import Base, BaseDbModel
+from .db import Users, Holidays, MeetInfo, Username, BanList
 
-__all__ = ["Base", "BaseDbModel"]  # add new classes from base
+__all__ = ["Base", "BaseDbModel", "Users", "Holidays", "MeetInfo", "Username", "BanList"]

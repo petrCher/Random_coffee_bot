@@ -17,5 +17,8 @@ db:
 migrate:
 	source ./venv/bin/activate && alembic upgrade head
 
+autogenerate:
+	source ./venv/bin/activate && alembic revision --autogenerate -m "init"
+
 run:
 	source ./venv/bin/activate && python -m src
