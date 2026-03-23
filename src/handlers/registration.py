@@ -17,9 +17,8 @@ async def cmd_start(message: Message, state: FSMContext, session: AsyncSession)-
     user_id=message.from_user.id
     username=message.from_user.username
 
-    existing = await session.execute(
-        select(Users).where(Users.tg_id==user_id)
-    )
+    existing = Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
+    
     user=existing.scalar_one_or_none()
     if user:
         await message.answer(

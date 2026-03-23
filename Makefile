@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 configure: venv
-	source ./venv/bin/activate && pip install -r requirements.txt -r requirements.dev.txt
+	source ./venv/bin/activate && pip install --force-reinstall -r requirements.txt -r requirements.dev.txt
 
 venv:
 	python3.11 -m venv venv
