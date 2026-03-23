@@ -8,9 +8,9 @@ class Users(BaseDbModel):
     __tablename__ = "user_info"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     tg_id: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
-    name: Mapped[str] = mapped_column(String, nullable=False)
-    birthday: Mapped[str] = mapped_column(String, default=None)
-    about: Mapped[str] = mapped_column(String, nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=True)
+    birthday: Mapped[str] = mapped_column(String, nullable=True)
+    about: Mapped[str] = mapped_column(String, nullable=True)
 
 
 class Holidays(BaseDbModel):

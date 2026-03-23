@@ -17,14 +17,13 @@ async def cmd_start(message: Message, state: FSMContext, session: AsyncSession)-
     user_id=message.from_user.id
     username=message.from_user.username
 
-    existing = Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
-    
-    user=existing.scalar_one_or_none()
+    user = await Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
     if user:
         await message.answer(
             f"Привет, {username}!\nТы уже зарегистрирован"
         )
         return
+    await Users.create(session=session, tg_id=user_id)
     await message.answer(
         f"Привет, {username}!\n{Answers.start_message}"
     )
