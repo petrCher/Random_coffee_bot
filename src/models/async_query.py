@@ -1,12 +1,12 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
 class AsyncQuery:
     def __init__(self, model, session: AsyncSession, stmt=None):
         self.model = model
         self.session = session
         self.stmt = stmt if stmt is not None else select(model)
-
 
     def filter(self, *conditions):
         new_stmt = self.stmt.where(*conditions)

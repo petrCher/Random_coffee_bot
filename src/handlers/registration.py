@@ -1,17 +1,17 @@
-from aiogram import Router, F
+from aiogram import F, Router
 from aiogram.filters import Command
-from aiogram.types import CallbackQuery, Message
-from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
-from src.utils.answers import Answers
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.models.db import Users, Username
-from sqlalchemy import select
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import CallbackQuery, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.models.db import Username, Users
+from src.utils.answers import Answers
 
 router = Router()
 answer = Answers()
+
 
 class RegFSM(StatesGroup):
     waiting_full_name = State()
@@ -19,27 +19,27 @@ class RegFSM(StatesGroup):
     waiting_info = State()
     waiting_review = State()
 
+
 @router.message(Command("start"))
-async def cmd_start(message: Message, state: FSMContext, session: AsyncSession)-> None:
+async def cmd_start(message: Message, state: FSMContext, session: AsyncSession) -> None:
     if not message.from_user:
         return
-    user_id=message.from_user.id
-    username=message.from_user.username
+    user_id = message.from_user.id
+    username = message.from_user.username
 
-    user = await Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
+    user = (
+        await Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
+    )
     if user:
-        await message.answer(
-            f"Привет, {username}!\nТы уже зарегистрирован"
-        )
+        await message.answer(f"Привет, {username}!\nТы уже зарегистрирован")
         return
     user = await Users.create(session=session, tg_id=user_id)
     await Username.create(session=session, id=user.id, username=username)
     await state.set_state(RegFSM.waiting_full_name)
-    await message.answer(
-        f"Привет, {username}!"
-    )
+    await message.answer(f"Привет, {username}!")
     await message.answer("Введите свое ФИО для регистрации")
     return
+
 
 @router.message(RegFSM.waiting_full_name)
 async def get_full_name(message: Message, state: FSMContext, session: AsyncSession):
@@ -48,10 +48,12 @@ async def get_full_name(message: Message, state: FSMContext, session: AsyncSessi
     if not message.text or not message.from_user:
         await message.answer("Пожалуйста, введите корректное ФИО")
         return
-    full_name=message.text
-    user_id=message.from_user.id
-    user = await Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
-    id=user.id
+    full_name = message.text
+    user_id = message.from_user.id
+    user = (
+        await Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
+    )
+    id = user.id
     await Users.update(id=id, session=session, name=full_name)
     if is_edit:
         await message.answer("ФИО успешно обновлено!")
@@ -61,6 +63,7 @@ async def get_full_name(message: Message, state: FSMContext, session: AsyncSessi
         await state.set_state(RegFSM.waiting_birthday)
         await message.answer("Введите свою дату рождения в формате dd.mm.yyyy")
 
+
 @router.message(RegFSM.waiting_birthday)
 async def get_birthday(message: Message, state: FSMContext, session: AsyncSession):
     data = await state.get_data()
@@ -68,10 +71,12 @@ async def get_birthday(message: Message, state: FSMContext, session: AsyncSessio
     if not message.text or not message.from_user:
         await message.answer("Пожалуйста, введите дату рождения")
         return
-    birthday=message.text
-    user_id=message.from_user.id
-    user = await Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
-    id=user.id
+    birthday = message.text
+    user_id = message.from_user.id
+    user = (
+        await Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
+    )
+    id = user.id
     await Users.update(id=id, session=session, birthday=birthday)
     if is_edit:
         await message.answer("День рождения успешно обновлен!")
@@ -81,6 +86,7 @@ async def get_birthday(message: Message, state: FSMContext, session: AsyncSessio
         await state.set_state(RegFSM.waiting_info)
         await message.answer("Введите информацию о себе")
 
+
 @router.message(RegFSM.waiting_info)
 async def get_info(message: Message, state: FSMContext, session: AsyncSession):
     data = await state.get_data()
@@ -88,18 +94,21 @@ async def get_info(message: Message, state: FSMContext, session: AsyncSession):
     if not message.text or not message.from_user:
         await message.answer("Пожалуйста, введите информацию о себе")
         return
-    info=message.text
-    user_id=message.from_user.id
-    user = await Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
-    id=user.id
+    info = message.text
+    user_id = message.from_user.id
+    user = (
+        await Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
+    )
+    id = user.id
     await Users.update(id=id, session=session, about=info)
     if is_edit:
         await message.answer("Информация о себе успешно обновлена!")
     await state.clear()
     await show_all_info(id, message, session)
-    
+
+
 async def show_all_info(id: int, message: Message, session: AsyncSession):
-    user = await Users.query(session=session).filter(Users.id==id).one_or_none()
+    user = await Users.query(session=session).filter(Users.id == id).one_or_none()
     text = f"Твоя карточка:\nФИО - <b>{user.name}</b>\nДата рождения - <b>{user.birthday}</b>\nИнформация о себе - <b>{user.about}</b>"
     builder = InlineKeyboardBuilder()
     builder.button(text="Изменить ФИО", callback_data="edit:name")
@@ -109,8 +118,11 @@ async def show_all_info(id: int, message: Message, session: AsyncSession):
     builder.adjust(1)
     await message.answer(text, reply_markup=builder.as_markup(), parse_mode="HTML")
 
+
 @router.callback_query(F.data.startswith("edit"))
-async def edit_profile(callback: CallbackQuery, state: FSMContext, session: AsyncSession):
+async def edit_profile(
+    callback: CallbackQuery, state: FSMContext, session: AsyncSession
+):
     action = callback.data.split(":")[1]
     if action == "done":
         await callback.message.edit_text("Отлично! Данные сохранены.")

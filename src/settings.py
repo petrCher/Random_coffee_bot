@@ -1,7 +1,6 @@
-import os
 from functools import lru_cache
 
-from pydantic import ConfigDict, PostgresDsn
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -13,6 +12,7 @@ class Settings(BaseSettings):
     # MARKETING_URL: str //future tasks
 
     model_config = ConfigDict(case_sensitive=True, env_file=".env", extra="allow")
+
 
 @lru_cache
 def get_settings() -> Settings:

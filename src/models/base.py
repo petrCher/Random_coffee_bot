@@ -3,11 +3,10 @@ from __future__ import annotations
 import re
 
 from sqlalchemy import not_, select
-from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import as_declarative, declared_attr
-from src.models.async_query import AsyncQuery
 
+from src.models.async_query import AsyncQuery
 from src.utils.exceptions import AlreadyExists, ObjectNotFound
 
 
@@ -45,7 +44,6 @@ class BaseDbModel(Base):
         if not with_deleted and hasattr(cls, "is_deleted"):
             stmt = stmt.where(cls.is_deleted.is_(False))
         return AsyncQuery(cls, session, stmt)
-
 
     @classmethod
     async def get(

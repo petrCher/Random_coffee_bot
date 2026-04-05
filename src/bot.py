@@ -2,9 +2,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from src.settings import Settings
 from src.handlers import setup_routers
 from src.middleware.db import DbSessionMiddleware
+from src.settings import Settings
 
 settings = Settings()
 bot = Bot(
