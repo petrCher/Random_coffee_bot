@@ -108,7 +108,7 @@ async def get_info(message: Message, state: FSMContext, session: AsyncSession):
 
 
 async def show_all_info(id: int, message: Message, session: AsyncSession):
-    user = await Users.query(session=session).filter(Users.id == id).one_or_none()
+    user = await Users.get(id=id, session=session)
     text = f"Твоя карточка:\nФИО - <b>{user.name}</b>\nДата рождения - <b>{user.birthday}</b>\nИнформация о себе - <b>{user.about}</b>"
     builder = InlineKeyboardBuilder()
     builder.button(text="Изменить ФИО", callback_data="edit:name")
