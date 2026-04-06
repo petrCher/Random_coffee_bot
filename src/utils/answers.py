@@ -1,5 +1,17 @@
 from dataclasses import dataclass
 
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+admin_panel_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="Получить список пользователей", callback_data="admin:get_users"
+            )
+        ],
+    ]
+)
+
 
 @dataclass
 class Answers:
