@@ -107,6 +107,16 @@ async def get_info(message: Message, state: FSMContext, session: AsyncSession):
     await show_all_info(id, message, session)
 
 
+@router.message(Command("card"))
+async def cmd_menu(message: Message, session: AsyncSession) -> None:
+    user_id = message.from_user.id
+    user = (
+        await Users.query(session=session).filter(Users.tg_id == user_id).one_or_none()
+    )
+    id = user.id
+    await show_all_info(id, message, session)
+
+
 async def show_all_info(id: int, message: Message, session: AsyncSession):
     user = await Users.get(id=id, session=session)
     text = f"Твоя карточка:\nФИО - <b>{user.name}</b>\nДата рождения - <b>{user.birthday}</b>\nИнформация о себе - <b>{user.about}</b>"
